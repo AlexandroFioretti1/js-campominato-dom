@@ -21,13 +21,27 @@ const playButton = document.getElementById("play_button");
 
 // Aggiungo un listener per l'evento 'click' sul bottone
 playButton.addEventListener("click", function () {
-    
   // Seleziono l'elemento HTML dove inserire la griglia di gioco
   const containerGame = document.getElementById("container_game");
 
-  // Inizializzo una variabile per il numero della cella corrente
-  let cellNumber = 1;
+  containerGame.innerHTML = "";
+  for (let i = 1; i <= 100; i++) {
+    const cell = document.createElement("div");
+    cell.innerHTML = i.toString();
+    cell.classList.add("cell");
+    containerGame.append(cell);
+    cell.addEventListener("click", function () {
+      // Coloro la cella di blu chiaro
+      this.style.backgroundColor = "lightblue";
+      // Stampo il numero della cella nella console
+      console.log(
+        "Hai cliccato nella casella con il Numero " + this.textContent
+      );
+    });
+  }
+});
 
+/* 
   // Creo una tabella HTML con 10 righe e 10 colonne
   const table = document.createElement("table");
   for (let i = 0; i < 10; i++) {
@@ -62,11 +76,11 @@ playButton.addEventListener("click", function () {
       // Aggiorno il numero della cella corrente
       cellNumber++;
     }
-
     // Aggiungo la riga alla tabella
     table.appendChild(row);
-  }
+  } 
 
   // Inserisco la tabella nel container di gioco
   containerGame.appendChild(table);
 });
+*/
