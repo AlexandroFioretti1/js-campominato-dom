@@ -1,86 +1,67 @@
-/* L'utente clicca su un bottone
-che genererà una griglia di gioco quadrata.
-Ogni cella ha un numero progressivo da 1 a 100.
-Ci saranno quindi 10 caselle per ognuna delle 10 righe
-Quando l'utente clicca su una cella, la cella cliccata si colora di azzurro
-ed emetto un messaggio in console con il numero della cella cliccata. */
-
 /* 
- STRUMENTI USATI
- let/const
- console.log()
- cicle For[]
- function
- addElementById
- addEventListener
- createElement
+Consegna :
+Il computer deve generare 16 numeri casuali nello stesso range della difficoltà prescelta le bombe.
+nella stessa cella può essere posizionata al massimo una bomba, perciò nell’array delle bombe non potranno esserci due numeri uguali.
+In seguito l'utente clicca su una cella:
+se il numero è presente nella lista dei numeri generati abbiamo calpestato una bomba
+la cella si colora di rosso e la partita termina. Altrimenti la cella cliccata si colora di azzurro
+l'utente può continuare a cliccare sulle altre celle.
+La partita termina quando il giocatore clicca su una bomba o quando raggiunge il numero massimo possibile di numeri consentiti (ovvero quando ha rivelato tutte le celle che non sono bombe).
+Al termine della partita il software deve comunicare il punteggio, cioè il numero di volte che l’utente ha cliccato su una cella che non era una bomba.
 */
 
-// Seleziono l'elemento HTML del bottone PLAY
-const playButton = document.getElementById("play_button");
+// Seleziono l'elemento "container_game" dove inserire la griglia di gioco
+const containerGame = document.getElementById("container_game");
 
-// Aggiungo un listener per l'evento 'click' sul bottone
-playButton.addEventListener("click", function () {
-  // Seleziono l'elemento HTML dove inserire la griglia di gioco
-  const containerGame = document.getElementById("container_game");
+// Definisco la costante per il numero di celle 
+const numero_celle = 100;
 
-  containerGame.innerHTML = "";
-  for (let i = 1; i <= 100; i++) {
-    const cell = document.createElement("div");
-    cell.innerHTML = i.toString();
-    cell.classList.add("cell");
-    containerGame.append(cell);
-    cell.addEventListener("click", function () {
-      // Coloro la cella di blu chiaro
-      this.style.backgroundColor = "lightblue";
-      // Stampo il numero della cella nella console
-      console.log(
-        "Hai cliccato nella casella con il Numero " + this.textContent
-      );
-    });
+// Definisco due array, una per le celle e una array per le bombe
+let cells = [];
+let bombs = [];
+
+// Genero le 16 bombe inserite casualmente
+while (bombs.length < 16) {
+  let randomIndex = Math.floor(Math.random() * numero_celle);
+  if (!bombs.includes(randomIndex)) {
+    bombs.push(randomIndex);
   }
-});
+}
 
-/* 
-  // Creo una tabella HTML con 10 righe e 10 colonne
-  const table = document.createElement("table");
-  for (let i = 0; i < 10; i++) {
-    // Creo una riga della tabella
-    const row = document.createElement("tr");
-    for (let j = 0; j < 10; j++) {
+// Creo le celle per la griglia di gioco 
+for (let i = 1; i <= numero_celle; i++) {
+  const cell = document.createElement("div");
+  cell.innerHTML = i.toString();
+  cell.classList.add("cell");
+  containerGame.append(cell);
+  cells.push(cell);
 
-      // Creo una cella della riga
-      const cell = document.createElement("td");
+  // Aggiungo un listener per l'evento 'click' sulla cella
+  cell.addEventListener("click", function () {
 
-      // Imposto il numero della cella come contenuto della cella
-      cell.textContent = cellNumber;
+    // Verifico se la cella è una bomba 
+    if (bombs.includes(i)) {
 
-      // Aggiungo un listener per l'evento 'click' sulla cella
-      cell.addEventListener("click", function () {
+      // Coloro la cella di rosso in caso cè una bomba al posto di un numero
+      this.style.backgroundColor = "red";
 
-        // Coloro la cella di blu chiaro
-        this.style.backgroundColor = "lightblue";
+      // Comunico il punteggio con esito negativo al gioco 
+      alert("BOMBA!!! Punti: " +cells.filter((cell) => cell.style.backgroundColor !== "").length);
+      location.reload();
 
-        // Stampo il numero della cella nella console
-        console.log(
-          "Hai cliccato nella casella con il Numero " + this.textContent
-        );
+    } else {
 
-        // Aggiorno il numero della cella corrente
-        cellNumber++;
-      });
+      // Coloro la cella di azzurro in caso non cè una bomba sotto 
+      this.style.backgroundColor = "lightblue";
 
-      // Aggiungo la cella alla riga
-      row.appendChild(cell);
+      // Verifico se il giocatore ha vinto 
+      if (
+        cells.filter((cell) => cell.style.backgroundColor === "").length === bombs.length) {
 
-      // Aggiorno il numero della cella corrente
-      cellNumber++;
+        // Comunico il punteggio totale della partita
+        alert("Hai vinto! Punti totali : " + cells.filter((cell) => cell.style.backgroundColor !== "").length);
+      location.reload();
+      }
     }
-    // Aggiungo la riga alla tabella
-    table.appendChild(row);
-  } 
-
-  // Inserisco la tabella nel container di gioco
-  containerGame.appendChild(table);
-});
-*/
+  });
+}
